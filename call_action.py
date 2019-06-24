@@ -8,10 +8,10 @@ class CallAction():
         self.number = number
 
     def call_to_open(self):
-        return None
+        return print("valve opened!")
 
     def call_to_close(self):
-        return None
+        return print("valve closed!")
 
     def connect_phone(self):
         self.ser = serial.Serial('/dev/ttyAMA0', 115200, timeout=5)

@@ -26,21 +26,21 @@ while True:
             valve1.call_to_open()
             banOpen2 = 1
             banClose2 = 0
-    sleep(.5)
+            sleep(.5)
     elif GPIO.input(valve1_input) == 0:
         if banClose2 == 0:
             sleep(.5)
             valve1.call_to_close()
             banClose2 = 1
             banOpen2 = 0
-    sleep(.5)
+            sleep(.5)
     elif GPIO.input(valve2_input) == 1:
         if banOpen3 == 0:
             sleep(.5)
             valve2.call_to_open()
             banOpen3 = 1
             banClose3 = 0
-    sleep(.5)
+            sleep(.5)
     elif GPIO.input(valve2_input) == 0:
         if banClose3 == 0:
             sleep(.5)

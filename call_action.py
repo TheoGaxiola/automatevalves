@@ -52,7 +52,7 @@ class CallAction():
         return ret
 
     def send_command(self,com):
-        ser.write(com+"\r\n")
+        self.ser.write(com+"\r\n")
         time.sleep(2)
         ret = []
         while ser.inWaiting() > 0:

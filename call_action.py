@@ -1,6 +1,6 @@
 import serial
 import time
-from messaging.sms import SmsDeliver
+#from messaging.sms import SmsDeliver
 
 
 class CallAction():
@@ -24,7 +24,7 @@ class CallAction():
             com=sendCommand("AT")[0]
             count+=1
             if(count>5):
-            print "COULD NOT GET A HELLO, all I got was "+com
+                print ("COULD NOT GET A HELLO, all I got was ",com)
             return
         print(send_command("AT+CMGF=0")[0])
 
@@ -32,11 +32,11 @@ class CallAction():
             sms = self.read_sms()
 
             for s in sms:
-            print ""
-            print "SMS"
-            response = s.text
-            time.sleep(1)
-            if response is not None:
+                print ("")
+                print ("SMS")
+                response = s.text
+                time.sleep(1)
+                if response is not None:
                     killSMS()
             return response
 
@@ -46,9 +46,10 @@ class CallAction():
         ret = []
         for item in list:
             #print item
-                if item.startswith("+CMGL:") == False:
-            if item!="OK":
-                ret.append(SmsDeliver(item))
+            if item.startswith("+CMGL:") == False:
+                if item!="OK":
+                  #  ret.append(SmsDeliver(item))
+                  ret.append(item)
         return ret
 
     def send_command(self,com):
@@ -60,5 +61,5 @@ class CallAction():
             msg = msg.replace("\r","")
             msg = msg.replace("\n","")
             if msg!="":
-            ret.append(msg)
+                ret.append(msg)
         return ret

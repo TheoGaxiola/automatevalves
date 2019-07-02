@@ -10,6 +10,9 @@ class CallAction():
     def call_to_open(self):
         #return print("valve opened!")
         self.connect_phone()
+        command_to_hang_off = "ATH\r"
+        self.ser.write(command_to_hang_off.encode())
+        time.sleep(2)
         command = "ATD{};\r".format(self.number)
         self.ser.write(command.encode())
         print("call sent to open valve")
@@ -19,7 +22,7 @@ class CallAction():
     def call_to_close(self):
         #return print("valve closed!")
         self.connect_phone()
-        command_to_hang_off = "ATH;\r"
+        command_to_hang_off = "ATH\r"
         self.ser.write(command_to_hang_off.encode())
         time.sleep(2)
         command = "ATD{};\r".format(self.number)

@@ -16,11 +16,11 @@ valve2 = CallAction(6737321192)
 valve1_input = 16
 valve2_input = 12
 GPIO.setup(valve1_input,GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(valve2_input,GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(valve2_input,GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 while True:
-    print (GPIO.input(valve1_input))
-    print (GPIO.input(valve2_input))
+    print(GPIO.input(valve1_input))
+    print(GPIO.input(valve2_input))
     sleep(.5)
     if GPIO.input(valve1_input) == 1:
         if banOpen2 == 0:

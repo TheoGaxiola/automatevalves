@@ -8,13 +8,18 @@ class CallAction():
         self.number = number
 
     def call_to_open(self):
-        return print("valve opened!")
+        #return print("valve opened!")
+        self.connect_phone()
+        self.ser.write("ATD{};\r".format(self.number))
+        print("call send")
+        time.sleep(10)
+        return print("valve opened")
 
     def call_to_close(self):
         return print("valve closed!")
 
     def connect_phone(self):
-        self.ser = serial.Serial('/dev/ttyAMA0', 115200, timeout=5)
+        self.ser = serial.Serial('/dev/ttyS0', 9600)
 
     def get_new_sms_response(self):
         print("SENDING HELLO")

@@ -10,13 +10,23 @@ class CallAction():
     def call_to_open(self):
         #return print("valve opened!")
         self.connect_phone()
-        self.ser.write("ATD{};\r".format(self.number))
+        command = "ATD{};\r".format(self.number)
+        self.ser.write(command.encode())
         print("call send")
         time.sleep(10)
         return print("valve opened")
 
     def call_to_close(self):
-        return print("valve closed!")
+        #return print("valve closed!")
+        self.connect_phone()
+        command_to_hang_off = "ATH;\r"
+        self.ser.write(command_to_hang_off.encode())
+        time.sleep(2)
+        command = "ATD{};\r".format(self.number)
+        self.ser.write(command.encode())
+        print("call send")
+        time.sleep(10)
+        return print("valve opened")
 
     def connect_phone(self):
         self.ser = serial.Serial('/dev/ttyS0', 9600)

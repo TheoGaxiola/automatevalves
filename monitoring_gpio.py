@@ -21,34 +21,60 @@ GPIO.setup(valve2_input,GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 while True:
     print(GPIO.input(valve1_input))
     print(GPIO.input(valve2_input))
-    sleep(2)
     if GPIO.input(valve1_input) == 1:
-        if banOpen2 == 0:
-            sleep(2)
-            valve1.call_to_open()
-            banOpen2 = 1
-            banClose2 = 0
-            sleep(2)
+        counter = 0
+        while (True):
+            sleep(1)
+            if GPIO.input(valve1_input) == 1:
+                counter +=1
+                if counter == 10 :
+                    if banOpen2 == 0:
+                        valve1.call_to_open()
+                        banOpen2 = 1
+                        banClose2 = 0
+                        return True
+            else:
+                return True
+
     if GPIO.input(valve1_input) == 0:
-        if banClose2 == 0:
-            sleep(2)
-            valve1.call_to_close()
-            banClose2 = 1
-            banOpen2 = 0
-            sleep(2)        
+        counter = 0
+        while (True):
+            sleep(1)
+            if GPIO.input(valve1_input) == 0:
+                counter +=1
+                if counter == 10 :
+                    if banClose2 == 0:
+                        valve1.call_to_close()
+                        banClose2 = 1
+                        banOpen2 = 0
+                        return True
+            else:
+                return True
     if GPIO.input(valve2_input) == 1:
-        #print("INICIO VALVE 2")
-        if banOpen3 == 0:
-            sleep(2)
-            #print("hola valve2")
-            valve2.call_to_open()
-            banOpen3 = 1
-            banClose3 = 0
-            sleep(2)
+        counter = 0
+        while (True):
+            sleep(1)
+            if GPIO.input(valve1_input) == 1:
+                counter +=1
+                if counter == 10 :
+                    if banOpen3 == 0:
+                        valve2.call_to_open()
+                        banOpen3 = 1
+                        banClose3 = 0
+                        return True
+            else:
+                return True
     if GPIO.input(valve2_input) == 0:
-        #print("hola inicio valve 2 valor 0")
-        if banClose3 == 0:
-            sleep(2)
-            valve2.call_to_close()
-            banClose3 = 1
-            banOpen3 = 0
+        counter = 0
+        while (True):
+            sleep(1)
+            if GPIO.input(valve1_input) == 0:
+                counter +=1
+                if counter == 10 :
+                    if banClose3 == 0:
+                        valve2.call_to_close()
+                        banClose3 = 1
+                        banOpen3 = 0
+                        return True
+            else:
+                return True

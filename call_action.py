@@ -86,7 +86,8 @@ class CallAction():
         #self.ser.write(com.encode())
         time.sleep(2)
         ret = []
-        while self.ser.inWaiting() > 0:
+        msg = None
+        while b"CMTI" not in msg:
             msg = self.ser.readline().strip()
             #msg = msg.decode().replace("\r","")
             #msg = msg.decode().replace("\n","")

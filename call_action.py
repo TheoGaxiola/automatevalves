@@ -39,12 +39,12 @@ class CallAction():
         com="ERROR"
         count=0
         while(com!="OK"):
-            com=sendCommand("AT")[0]
+            com=sendCommand("AT\r")[0]
             count+=1
             if(count>5):
                 print ("COULD NOT GET A HELLO, all I got was ",com)
             return
-        print(send_command("AT+CMGF=0")[0])
+        print(send_command("AT+CMGF=0\r")[0])
 
         while(True):
             sms = self.read_sms()
@@ -60,24 +60,24 @@ class CallAction():
 
     def read_sms(self):
         print("LOOKING FOR SMS")
-        list = send_command("AT+CMGL=0")
+        list = self.send_command("AT+CMGL=0\r")
         ret = []
         for item in list:
             #print item
-            if item.startswith("+CMGL:") == False:
-                if item!="OK":
+            #if item.startswith("+CMGL:") == False:
+            #    if item!="OK":
                   #  ret.append(SmsDeliver(item))
-                  ret.append(item)
+            ret.append(item)
         return ret
 
     def send_command(self,com):
-        self.ser.write(com+"\r\n")
+        self.ser.write(com.encode())
         time.sleep(2)
         ret = []
-        while ser.inWaiting() > 0:
-            msg = ser.readline().strip()
-            msg = msg.replace("\r","")
-            msg = msg.replace("\n","")
+        while self.ser.inWaiting() > 0:
+            msg = self.ser.readline().strip()
+            #msg = msg.decode().replace("\r","")
+            #msg = msg.decode().replace("\n","")
             if msg!="":
                 ret.append(msg)
         return ret

@@ -32,7 +32,7 @@ class CallAction():
         return print("valve closed!")
 
     def connect_phone(self):
-        self.ser = serial.Serial('/dev/ttyS0', 9600)
+        self.ser = serial.Serial('/dev/ttyS0', 9600, timeout= 20)
 
     def get_new_sms_response(self):
         print("SENDING HELLO")
@@ -72,6 +72,18 @@ class CallAction():
 
     def send_command(self,com):
         self.ser.write(com.encode())
+        time.sleep(2)
+        ret = []
+        while self.ser.inWaiting() > 0:
+            msg = self.ser.readline().strip()
+            #msg = msg.decode().replace("\r","")
+            #msg = msg.decode().replace("\n","")
+            if msg!="":
+                ret.append(msg)
+        return ret
+
+    def waiting_for_new_sms(self):
+        #self.ser.write(com.encode())
         time.sleep(2)
         ret = []
         while self.ser.inWaiting() > 0:

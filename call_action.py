@@ -1,5 +1,6 @@
 import serial
 import time
+import re
 #from messaging.sms import SmsDeliver
 
 
@@ -32,43 +33,8 @@ class CallAction():
         return print("valve closed!")
 
     def connect_phone(self):
-        self.ser = serial.Serial('/dev/ttyS0', 9600, timeout= 20)
+        self.ser = serial.Serial('/dev/ttyS0', 9600, timeout=20)
 
-    def get_new_sms_response(self):
-        print("SENDING HELLO")
-        com="ERROR"
-        count=0
-        while(com!="OK"):
-            com=sendCommand("AT\r")[0]
-            count+=1
-            if(count>5):
-                print ("COULD NOT GET A HELLO, all I got was ",com)
-            return
-        print(send_command("AT+CMGF=0\r")[0])
-
-        while(True):
-            sms = self.read_sms()
-
-            for s in sms:
-                print ("")
-                print ("SMS")
-                response = s.text
-                time.sleep(1)
-                if response is not None:
-                    killSMS()
-            return response
-
-    def read_sms(self):
-        print("LOOKING FOR SMS")
-        list = self.send_command("AT+CMGL=0\r")
-        ret = []
-        for item in list:
-            #print item
-            #if item.startswith("+CMGL:") == False:
-            #    if item!="OK":
-                  #  ret.append(SmsDeliver(item))
-            ret.append(item)
-        return ret
 
     def send_command(self,com):
         self.ser.write(com.encode())
@@ -76,21 +42,29 @@ class CallAction():
         ret = []
         while self.ser.inWaiting() > 0:
             msg = self.ser.readline().strip()
-            #msg = msg.decode().replace("\r","")
-            #msg = msg.decode().replace("\n","")
             if msg!="":
                 ret.append(msg)
         return ret
 
-    def waiting_for_new_sms(self):
-        #self.ser.write(com.encode())
+    def get_income_sms_message(self):
         time.sleep(2)
         ret = []
-        msg = None
+        msg = b""
         while b"CMTI" not in msg:
             msg = self.ser.readline().strip()
-            #msg = msg.decode().replace("\r","")
-            #msg = msg.decode().replace("\n","")
-            if msg!="":
+            if msg != b"":
+                ret.append(msg)
+        sms = self.get_sms_from_income_signal(ret)
+        return sms
+
+    def get_sms_from_income_signal(self, signal):
+        index = re.findall(r'\d+', signal)
+        command = "AT+CMGR={}\r".format(index[0])
+        self.ser.write(command.encode())
+        ret = []
+        msg = b""
+        while b"OK" not in msg:
+            msg = self.ser.readline().strip()
+            if msg != b"":
                 ret.append(msg)
         return ret

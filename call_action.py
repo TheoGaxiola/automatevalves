@@ -54,11 +54,11 @@ class CallAction():
             msg = self.ser.readline().strip()
             if msg != b"":
                 ret.append(msg)
-        sms = self.get_sms_from_income_signal(ret)
+        sms = self.get_sms_from_income_signal(ret[0])
         return sms
 
     def get_sms_from_income_signal(self, signal):
-        index = re.findall(r'\d+', signal)
+        index = re.findall(r'\d+', signal.decode())
         command = "AT+CMGR={}\r".format(index[0])
         self.ser.write(command.encode())
         ret = []
@@ -68,3 +68,11 @@ class CallAction():
             if msg != b"":
                 ret.append(msg)
         return ret
+
+    def detect_valve_opened(self):
+        sms = self.get_income_sms_message()
+        for i in sms:
+            if b"opened" in i:
+                print("CONFIRMANDO VALVULA ABIERTA!!!!!!!!!!")
+
+

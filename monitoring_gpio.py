@@ -9,8 +9,8 @@ banOpen3 = 0
 banClose3 = 0
 
 #creating an CallAction instance for each valve
-valve1 = CallAction(3314680990)
-valve2 = CallAction(6737321192)
+valve1 = CallAction(3314680990, "valvula 1")
+valve2 = CallAction(6737321192, "valvula 2")
 
 #raspberry pi gpio inputs assignment for each valve
 valve1_input = 16

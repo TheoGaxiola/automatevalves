@@ -1,12 +1,16 @@
 import serial
 import time
 import re
-#from messaging.sms import SmsDeliver
+import RPi.GPIO as GPIO
 
+GPIO.setmode(GPIO.BOARD)
+gpio_output = 7
+GPIO.setup(gpio_output, GPIO.OUT)
 
 class CallAction():
-    def __init__(self, number):
+    def __init__(self, number, valve_name=None, admin_tel=None):
         self.number = number
+        self.valve_name = valve_name
 
     def call_to_open(self):
         #return print("valve opened!")
@@ -17,8 +21,14 @@ class CallAction():
         command = "ATD{};\r".format(self.number)
         self.ser.write(command.encode())
         print("call sent to open valve")
-        time.sleep(10)
-        return print("valve opened!")
+        sms_confirmation = self.detect_valve_opened()
+        if sms_confirmation:
+            self.send_sms("Valve opened confirmation", 3314680990)
+            return print("valve opened!")
+        else:
+            self.send_sms("No hubo respuesta de gsm relay de {}, la bomba fue apagada por seguridad".format(self.valve_name)) #3rd cellphone number pending
+            self.emergency_pump_stop()
+            return print("error in valve open process")
 
     def call_to_close(self):
         #return print("valve closed!")
@@ -72,7 +82,36 @@ class CallAction():
     def detect_valve_opened(self):
         sms = self.get_income_sms_message()
         for i in sms:
-            if b"opened" in i:
-                print("CONFIRMANDO VALVULA ABIERTA!!!!!!!!!!")
+            if b"openedOperated" in i:
+                return True
+            else:
+                return False
 
+    def detect_valve_closed(self):
+        sms = self.get_income_sms_message()
+        for i in sms:
+            if b"closedOperated" in i:
+                return True
+            else:
+                return False
 
+    def send_sms(self, msg, number=None):
+        command = 'AT+CMGF=1\r'
+        self.ser.write(command.encode())
+        time.sleep(0.5)
+
+        command = 'AT+CMGS="{}"\r'.format(number)
+        self.ser.write(command.encode())
+        time.sleep(0.5)
+
+        cmd = '{}\r'.format(msg)
+        self.ser.write(cmd.encode())
+        time.sleep(0.5)
+
+        self.ser.write(bytes([26]))
+
+        time.sleep(0.5)
+
+    def emergency_pump_stop(self):
+        GPIO.output(gpio_output, GPIO.HIGH)
+        return True
